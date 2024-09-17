@@ -1,5 +1,5 @@
-github.com/0x0FACED/pdf-proto v0.0.1 h1:RbThy7SXUorXc2sBz5vL1iFjllUGzFpWMt7df2uqGxU=
-github.com/0x0FACED/pdf-proto v0.0.1/go.mod h1:KDRZUhBtJzI8H00pX+Q+5q6gOQpUEB3C33jtP+F9PRI=
+github.com/0x0FACED/pdf-proto v0.0.2 h1:ANJ4NQ0Ew4SNWB1yaljzg+cjyOr6c0FsuwATYI7ef7M=
+github.com/0x0FACED/pdf-proto v0.0.2/go.mod h1:KDRZUhBtJzI8H00pX+Q+5q6gOQpUEB3C33jtP+F9PRI=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/google/go-cmp v0.6.0 h1:ofyhxvXcZhMsU5ulbFiLKl/XBFqE1GSq7atu8tAmTRI=
