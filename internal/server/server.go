@@ -7,6 +7,7 @@ import (
 	"github.com/0x0FACED/pdf-proto/pdf_service/gen"
 	"github.com/0x0FACED/pdf-saver-api/config"
 	"github.com/0x0FACED/pdf-saver-api/internal/logger"
+	"github.com/0x0FACED/pdf-saver-api/internal/mem/redis"
 	"github.com/0x0FACED/pdf-saver-api/internal/service"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
@@ -36,11 +37,13 @@ func Start() error {
 		logger.Fatal("Cannot Dial()", zap.Error(err))
 		return err
 	}
+	mem := redis.New(cfg.MemCache)
+
 	// grpc сервер создаем
 	grpcServer := grpc.NewServer()
 
 	// создаем объект сервиса
-	service := service.New(logger, cfg.PDF)
+	service := service.New(logger, cfg.PDF, &mem)
 
 	// создаем объект НАШЕГО сервера (по сути оболочка для сервиса)
 	srv := New(service, logger)
@@ -50,5 +53,4 @@ func Start() error {
 
 	// стартует прослушивание по адресу cfg.PDF.Host+":"+cfg.PDF.Post
 	return grpcServer.Serve(lis)
-
 }
