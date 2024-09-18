@@ -7,9 +7,14 @@ import (
 )
 
 type Config struct {
-	PDF PRFServiceConfig
+	PDF      PRFServiceConfig
+	MemCache MemCacheConfig
 }
 
+type MemCacheConfig struct {
+	Host string
+	Port string
+}
 type PRFServiceConfig struct {
 	Host string
 	Port string
@@ -25,6 +30,10 @@ func Load() (*Config, error) {
 		PDF: PRFServiceConfig{
 			Host: os.Getenv("PDF_HOST"),
 			Port: os.Getenv("PDF_PORT"),
+		},
+		MemCache: MemCacheConfig{
+			Host: os.Getenv("REDIS_HOST"),
+			Port: os.Getenv("REDIS_PORT"),
 		},
 	}, nil
 }
