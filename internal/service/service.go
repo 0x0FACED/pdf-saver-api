@@ -18,10 +18,10 @@ type PDFService struct {
 	// добавить redis для хранения временных файлов
 
 	rod *rod.Browser
-	mem *mem.MemoryCacher
+	mem mem.MemoryCacher
 }
 
-func New(logger *logger.ZapLogger, cfg config.PRFServiceConfig, mem *mem.MemoryCacher) *PDFService {
+func New(logger *logger.ZapLogger, cfg config.PRFServiceConfig, mem mem.MemoryCacher) *PDFService {
 	return &PDFService{
 		logger: logger,
 		cfg:    cfg,
