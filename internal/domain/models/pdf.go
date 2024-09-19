@@ -1,10 +1,10 @@
 package models
 
 type PDF struct {
-	// Ориг ссылка на страницу, с которой делаем pdf
-	OriginalURL string
+	// Имя файла
+	Filename string `json:"filename"`
 	// Название pdf (мб будет пустое, тогда сервак даст название случайное из UUID)
-	Description string
+	Description string `json:"description"`
 	// Содержание pdf файла
-	Content []byte
+	Content []byte `json:"data"`
 }
