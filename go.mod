@@ -3,7 +3,7 @@ module github.com/0x0FACED/pdf-saver-api
 go 1.23.0
 
 require (
-	github.com/0x0FACED/pdf-proto v0.0.2
+	github.com/0x0FACED/pdf-proto v0.0.3
 	github.com/go-rod/rod v0.116.2
 	github.com/joho/godotenv v1.5.1
 	github.com/redis/go-redis/v9 v9.6.1
