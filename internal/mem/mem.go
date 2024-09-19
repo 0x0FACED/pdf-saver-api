@@ -1,6 +1,10 @@
 package mem
 
-import "github.com/0x0FACED/pdf-saver-api/internal/domain/models"
+import (
+	"context"
+
+	"github.com/0x0FACED/pdf-saver-api/internal/domain/models"
+)
 
 // В целом интерфейс для реализации через redis или memcached
 // Через интерфейс, чтобы в теории можно было переключиться с redis на memcached
@@ -8,8 +12,18 @@ import "github.com/0x0FACED/pdf-saver-api/internal/domain/models"
 type MemoryCacher interface {
 	// сейвим pdf в редис, чтобы один юзер не мог постоянно дергать rod для получения pdf из ссылки
 	// + добавим cooldown на такие запросы)))
-	SavePDF(pdf *models.PDF) error
+	SavePDF(ctx context.Context, userID int64, pdf *models.PDF) error
 
 	// Получить pdf по описанию (названию)
-	GetPDF(desc string) (*models.PDF, error)
+	GetPDF(ctx context.Context, userID int64, description string) (*models.PDF, error)
+
+	DeletePDF(ctx context.Context, userID int64, description string) error
+
+	DeleteAllPDF(ctx context.Context, userID int64) error
+
+	DailyLimitChecker
+}
+
+type DailyLimitChecker interface {
+	CheckDailyLimit(ctx context.Context, userID int64) error
 }
