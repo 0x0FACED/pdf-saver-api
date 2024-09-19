@@ -43,7 +43,7 @@ func Start() error {
 	grpcServer := grpc.NewServer()
 
 	// создаем объект сервиса
-	service := service.New(logger, cfg.PDF, &mem)
+	service := service.New(logger, cfg.PDF, mem)
 
 	// создаем объект НАШЕГО сервера (по сути оболочка для сервиса)
 	srv := New(service, logger)
