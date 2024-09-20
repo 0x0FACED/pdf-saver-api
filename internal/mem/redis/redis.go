@@ -4,6 +4,8 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"log"
+	"strconv"
 	"time"
 
 	"github.com/0x0FACED/pdf-saver-api/config"
@@ -22,6 +24,7 @@ func New(cfg config.MemCacheConfig) mem.MemoryCacher {
 	client := redis.NewClient(
 		&redis.Options{
 			Addr: cfg.Host + ":" + cfg.Port,
+			DB:   dbNumber(cfg.Number),
 		},
 	)
 
@@ -29,6 +32,16 @@ func New(cfg config.MemCacheConfig) mem.MemoryCacher {
 		r:   client,
 		cfg: cfg,
 	}
+}
+
+func dbNumber(number string) int {
+	num, err := strconv.Atoi(number)
+	if err != nil {
+		log.Fatalln("Incorrect db number of redis")
+		return -1
+	}
+
+	return num
 }
 
 func (r *RedisClient) SavePDF(ctx context.Context, userID int64, pdf *models.PDF) error {
