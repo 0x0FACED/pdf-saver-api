@@ -14,6 +14,11 @@ type Config struct {
 type MemCacheConfig struct {
 	Host string
 	Port string
+
+	// Какая? Redis или memcached
+	Database string
+	// Номер БД (юзаем один образ для двух сервисов, надо выбрать разные бд)
+	Number string
 }
 type PRFServiceConfig struct {
 	Host string
@@ -32,8 +37,10 @@ func Load() (*Config, error) {
 			Port: os.Getenv("PDF_PORT"),
 		},
 		MemCache: MemCacheConfig{
-			Host: os.Getenv("REDIS_HOST"),
-			Port: os.Getenv("REDIS_PORT"),
+			Host:     os.Getenv("MEMORY_DB_HOST"),
+			Port:     os.Getenv("MEMORY_DB_PORT"),
+			Database: os.Getenv("MEMORY_DB"),
+			Number:   os.Getenv("MEMORY_DB_NUMBER"),
 		},
 	}, nil
 }
