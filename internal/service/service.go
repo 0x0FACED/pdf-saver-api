@@ -6,6 +6,7 @@ import (
 	"github.com/0x0FACED/pdf-saver-api/internal/logger"
 	"github.com/0x0FACED/pdf-saver-api/internal/mem"
 	"github.com/go-rod/rod"
+	"github.com/go-rod/rod/lib/launcher"
 )
 
 type PDFService struct {
@@ -20,9 +21,11 @@ type PDFService struct {
 }
 
 func New(logger *logger.ZapLogger, cfg config.PRFServiceConfig, mem mem.MemoryCacher) *PDFService {
+	path, _ := launcher.LookPath()
+	u := launcher.New().Bin(path).MustLaunch()
 	r := rod.New()
 
-	r.MustConnect()
+	r.MustConnect().ControlURL(u)
 
 	return &PDFService{
 		logger: logger,
