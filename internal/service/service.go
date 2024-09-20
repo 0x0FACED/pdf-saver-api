@@ -13,19 +13,21 @@ type PDFService struct {
 
 	logger *logger.ZapLogger
 	cfg    config.PRFServiceConfig
-	// Здесь надо добавить еще headless браузер rod (go-rod)
-	// Еще реализовать механизм очереди через каналы
-	// добавить redis для хранения временных файлов
+	// Еще реализовать механизм очереди через каналы (брокер не нужен)
 
 	rod *rod.Browser
 	mem mem.MemoryCacher
 }
 
 func New(logger *logger.ZapLogger, cfg config.PRFServiceConfig, mem mem.MemoryCacher) *PDFService {
+	r := rod.New()
+
+	r.MustConnect()
+
 	return &PDFService{
 		logger: logger,
 		cfg:    cfg,
-		rod:    rod.New(),
+		rod:    r,
 		mem:    mem,
 	}
 }
