@@ -7,15 +7,18 @@ import (
 
 	"github.com/0x0FACED/pdf-proto/pdf_service/gen"
 	"github.com/0x0FACED/pdf-saver-api/internal/domain/models"
+	"go.uber.org/zap"
 )
 
 func (s *PDFService) ConvertToPDF(ctx context.Context, req *gen.ConvertToPDFRequest) (*gen.ConvertToPDFResponse, error) {
+	s.logger.Debug("Received req for save pdf", zap.Any("req", req))
 	if err := s.checkDailyLimit(req.UserId); err != nil {
 		return nil, err
 	}
 
 	pdf, err := s.mem.GetPDF(ctx, req.UserId, req.Description)
 	if err == nil {
+		s.logger.Debug("PDF Found in Redis", zap.Any("pdf", pdf))
 		return &gen.ConvertToPDFResponse{
 			PdfData:  pdf.Content,
 			Filename: pdf.Filename,
@@ -27,7 +30,10 @@ func (s *PDFService) ConvertToPDF(ctx context.Context, req *gen.ConvertToPDFRequ
 	if err != nil {
 		return nil, err
 	}
+	s.logger.Debug("Visited page", zap.String("req", req.OriginalUrl))
 
+	// Сжимаем с помощью gzip наш массив байтов
+	// выгодно с точки зрения хранения на сервере в редисе
 	compressedData, err := compressPDF(pdfData)
 	if err != nil {
 		return nil, err
@@ -40,10 +46,13 @@ func (s *PDFService) ConvertToPDF(ctx context.Context, req *gen.ConvertToPDFRequ
 		Filename:    fmt.Sprintf("%d.pdf", time.Now().Unix()),
 		Content:     compressedData,
 	}
-	if err := s.mem.SavePDF(ctx, req.UserId, pdf); err != nil {
-		return nil, err
-	}
 
+	/*if err := s.mem.SavePDF(ctx, req.UserId, pdf); err != nil {
+		s.logger.Debug("Cant save to Redis", zap.Error(err))
+		return nil, err
+	}*/
+
+	s.logger.Debug("Finished saving", zap.String("pdf", pdf.Filename))
 	return &gen.ConvertToPDFResponse{
 		PdfData:  pdf.Content,
 		Filename: pdf.Filename,
