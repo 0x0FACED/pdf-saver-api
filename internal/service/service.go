@@ -7,6 +7,7 @@ import (
 	"github.com/0x0FACED/pdf-saver-api/internal/mem"
 	"github.com/go-rod/rod"
 	"github.com/go-rod/rod/lib/launcher"
+	"go.uber.org/zap"
 )
 
 type PDFService struct {
@@ -21,11 +22,13 @@ type PDFService struct {
 }
 
 func New(logger *logger.ZapLogger, cfg config.PRFServiceConfig, mem mem.MemoryCacher) *PDFService {
-	path, _ := launcher.LookPath()
-	u := launcher.New().Bin(path).MustLaunch()
-	r := rod.New()
+	logger.Info("Creating PDFService...")
+	browserPath := "/usr/lib/chromium/chrome"
+	u := launcher.New().Bin(browserPath).MustLaunch()
 
-	r.MustConnect().ControlURL(u)
+	r := rod.New().ControlURL(u).MustConnect()
+
+	logger.Info("Connected to Rod", zap.String("browserPath", browserPath), zap.String("url", u))
 
 	return &PDFService{
 		logger: logger,
