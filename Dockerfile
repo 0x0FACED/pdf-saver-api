@@ -7,7 +7,7 @@ RUN apk add --no-cache \
     harfbuzz \
     ca-certificates \
     ttf-freefont \
-    dumb-init
+    && apk add --no-cache bash
 
 WORKDIR /app
 
