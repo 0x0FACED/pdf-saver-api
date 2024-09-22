@@ -28,12 +28,17 @@ func (s *PDFService) ConvertToPDF(ctx context.Context, req *gen.ConvertToPDFRequ
 		return nil, err
 	}
 
+	compressedData, err := compressPDF(pdfData)
+	if err != nil {
+		return nil, err
+	}
+
 	// В mem мы же сейвим структуру PDF вместе с неймом и описанием
 	// Далее может анмаршалить
 	pdf = &models.PDF{
 		Description: req.Description,
 		Filename:    fmt.Sprintf("%d.pdf", time.Now().Unix()),
-		Content:     pdfData,
+		Content:     compressedData,
 	}
 	if err := s.mem.SavePDF(ctx, req.UserId, pdf); err != nil {
 		return nil, err

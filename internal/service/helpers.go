@@ -1,6 +1,8 @@
 package service
 
 import (
+	"bytes"
+	"compress/gzip"
 	"context"
 	"io"
 	"log"
@@ -31,6 +33,23 @@ const (
 		}
 	}`
 )
+
+func compressPDF(data []byte) ([]byte, error) {
+	var buf bytes.Buffer
+	gzipWriter := gzip.NewWriter(&buf)
+
+	_, err := gzipWriter.Write(data)
+	if err != nil {
+		return nil, err
+	}
+
+	err = gzipWriter.Close()
+	if err != nil {
+		return nil, err
+	}
+
+	return buf.Bytes(), nil
+}
 
 func (s *PDFService) checkDailyLimit(userID int64) error {
 	return s.mem.CheckDailyLimit(context.TODO(), userID)
