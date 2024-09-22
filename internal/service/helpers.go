@@ -8,6 +8,7 @@ import (
 	"log"
 
 	"github.com/go-rod/rod/lib/proto"
+	"go.uber.org/zap"
 )
 
 const (
@@ -65,6 +66,12 @@ func (s *PDFService) visitPage(url string, scale float64) ([]byte, error) {
 	if err != nil {
 		log.Printf("Error closing pop up windows: %v", err)
 	}
+
+	defer func() {
+		if err := page.Close(); err != nil {
+			s.logger.Error("Error closing page", zap.Error(err))
+		}
+	}()
 
 	// TODO: перенести куда-то настройки стандартные
 	var h float64
