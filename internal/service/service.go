@@ -23,7 +23,12 @@ type PDFService struct {
 
 func New(logger *logger.ZapLogger, cfg config.PRFServiceConfig, mem mem.MemoryCacher) *PDFService {
 	logger.Info("Creating PDFService...")
-	browserPath := "/usr/lib/chromium/chrome"
+	browserPath, ex := launcher.LookPath()
+	if !ex {
+		logger.Info("Cant find Chrome, exiting...")
+		// tmp
+		panic("exiting")
+	}
 	u := launcher.New().Bin(browserPath).MustLaunch()
 
 	r := rod.New().ControlURL(u).MustConnect()
