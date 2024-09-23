@@ -32,6 +32,7 @@ func Start() error {
 		return err
 	}
 	logger := logger.New()
+	logger.Debug("cfg: ", zap.Any("cfg", cfg.PDF))
 	lis, err := net.Listen("tcp", cfg.PDF.Host+":"+cfg.PDF.Port)
 	if err != nil {
 		logger.Fatal("Cannot Dial()", zap.Error(err))
