@@ -25,6 +25,8 @@ func New(service *service.PDFService, logger *logger.ZapLogger) *server {
 	}
 }
 
+const maxMsgSize = 15 * 1024 * 1024 // 15 МБ
+
 func Start() error {
 	cfg, err := config.Load()
 	if err != nil {
@@ -41,7 +43,7 @@ func Start() error {
 	mem := redis.New(cfg.MemCache)
 
 	// grpc сервер создаем
-	grpcServer := grpc.NewServer()
+	grpcServer := grpc.NewServer(grpc.MaxRecvMsgSize(maxMsgSize))
 
 	// создаем объект сервиса
 	service := service.New(logger, cfg.PDF, mem)
