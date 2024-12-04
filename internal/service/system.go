@@ -3,7 +3,6 @@ package service
 import (
 	"context"
 	"fmt"
-	"time"
 
 	"github.com/0x0FACED/pdf-proto/pdf_service/gen"
 	"github.com/0x0FACED/pdf-saver-api/internal/domain/models"
@@ -16,17 +15,17 @@ func (s *PDFService) ConvertToPDF(ctx context.Context, req *gen.ConvertToPDFRequ
 		return nil, err
 	}
 
-	pdf, err := s.mem.GetPDF(ctx, req.UserId, req.Description)
+	/*pdf, err := s.mem.GetPDF(ctx, req.UserId, req.Description)
 	if err == nil {
 		s.logger.Debug("PDF Found in Redis", zap.Any("pdf", pdf))
 		return &gen.ConvertToPDFResponse{
 			PdfData:  pdf.Content,
 			Filename: pdf.Filename,
 		}, nil
-	}
+	}*/
 
 	// Получаем пдф в виде байтов (только контент)
-	pdfData, err := s.visitPage(req.OriginalUrl, req.Scale)
+	pdfData, title, err := s.visitPage(req.OriginalUrl, req.Scale)
 	if err != nil {
 		return nil, err
 	}
@@ -41,9 +40,9 @@ func (s *PDFService) ConvertToPDF(ctx context.Context, req *gen.ConvertToPDFRequ
 
 	// В mem мы же сейвим структуру PDF вместе с неймом и описанием
 	// Далее может анмаршалить
-	pdf = &models.PDF{
+	pdf := &models.PDF{
 		Description: req.Description,
-		Filename:    fmt.Sprintf("%d.pdf", time.Now().Unix()),
+		Filename:    fmt.Sprintf("%s.pdf", title[:32]), // макс 32 байта
 		Content:     compressedData,
 	}
 
