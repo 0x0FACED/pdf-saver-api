@@ -35,6 +35,10 @@ const (
 	}`
 )
 
+const (
+	MAX_LENGTH_TITLE = 32 // в символах
+)
+
 func compressPDF(data []byte) ([]byte, error) {
 	var buf bytes.Buffer
 	gzipWriter := gzip.NewWriter(&buf)
@@ -56,10 +60,22 @@ func (s *PDFService) checkDailyLimit(userID int64) error {
 	return s.mem.CheckDailyLimit(context.TODO(), userID)
 }
 
-func (s *PDFService) visitPage(url string, scale float64) ([]byte, error) {
+func truncateTitle(title string) string {
+	runes := []rune(title)
+
+	if len(runes) > MAX_LENGTH_TITLE {
+		return string(runes[:MAX_LENGTH_TITLE])
+	}
+
+	return title
+}
+
+func (s *PDFService) visitPage(url string, scale float64) ([]byte, string, error) {
 	page := s.rod.MustPage(url)
 
 	page.MustWaitLoad().MustElement("body")
+
+	title := truncateTitle(page.MustInfo().Title)
 
 	// js для закрытия некоторых окон (например, cookie)
 	_, err := page.Eval(JSClosePopUp)
@@ -100,7 +116,7 @@ func (s *PDFService) visitPage(url string, scale float64) ([]byte, error) {
 		MarginRight:     &mr,
 	})
 	if err != nil {
-		return nil, err
+		return nil, "", err
 	}
 
 	// Чтение данных из StreamReader в []byte
@@ -109,6 +125,6 @@ func (s *PDFService) visitPage(url string, scale float64) ([]byte, error) {
 		log.Fatal(err)
 	}
 
-	return pdfBuffer, nil
+	return pdfBuffer, title, nil
 
 }
