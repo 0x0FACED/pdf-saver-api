@@ -42,7 +42,7 @@ func (s *PDFService) ConvertToPDF(ctx context.Context, req *gen.ConvertToPDFRequ
 	// Далее может анмаршалить
 	pdf := &models.PDF{
 		Description: req.Description,
-		Filename:    fmt.Sprintf("%s.pdf", title[:32]), // макс 32 байта
+		Filename:    fmt.Sprintf("%s.pdf", title), // макс 32 байта
 		Content:     compressedData,
 	}
 
