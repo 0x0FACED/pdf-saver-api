@@ -71,7 +71,7 @@ func truncateTitle(title string) string {
 }
 
 func (s *PDFService) visitPage(url string, scale float64) ([]byte, string, error) {
-	page := s.rod.MustPage(url)
+	page := s.rod.MustPage(url) // бросает панику иногда, надо фиксить
 
 	page.MustWaitLoad().MustElement("body")
 
